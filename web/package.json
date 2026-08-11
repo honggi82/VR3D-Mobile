@@ -1,0 +1,8 @@
+{
+  "name": "vr3d-mobile-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://honggi82.github.io/VR3D-Mobile/contracts/package-v1.schema.json",
+  "title": "VR3D Mobile package manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "packageId", "createdAt", "source", "depth", "model", "viewGrid", "files"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "packageId": {"type": "string", "format": "uuid"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "mime", "width", "height"],
+      "properties": {
+        "path": {"const": "source.webp"},
+        "mime": {"const": "image/webp"},
+        "width": {"type": "integer", "minimum": 1, "maximum": 1920},
+        "height": {"type": "integer", "minimum": 1, "maximum": 1920}
+      }
+    },
+    "depth": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "encoding", "nearValue"],
+      "properties": {
+        "path": {"const": "depth.png"},
+        "encoding": {"const": "png16"},
+        "nearValue": {"const": 65535}
+      }
+    },
+    "model": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "variant"],
+      "properties": {
+        "name": {"const": "Video-Depth-Anything"},
+        "variant": {"enum": ["vitl", "vits"]}
+      }
+    },
+    "viewGrid": {
+      "type": "object", "additionalProperties": false,
+      "required": ["rollAngles", "pitchAngles", "views"],
+      "properties": {
+        "rollAngles": {"const": [-12, -8, -4, 0, 4, 8, 12]},
+        "pitchAngles": {"const": [-8, -4, 0, 4, 8]},
+        "views": {
+          "type": "array", "minItems": 35, "maxItems": 35,
+          "items": {"$ref": "#/$defs/view"}
+        }
+      }
+    },
+    "files": {
+      "type": "object", "minProperties": 37,
+      "propertyNames": {"pattern": "^(source\\.webp|depth\\.png|views/view_r[0-4]_c[0-6]\\.webp)$"},
+      "additionalProperties": {"$ref": "#/$defs/fileDigest"}
+    }
+  },
+  "$defs": {
+    "view": {
+      "type": "object", "additionalProperties": false,
+      "required": ["row", "column", "pitch", "roll", "path"],
+      "properties": {
+        "row": {"type": "integer", "minimum": 0, "maximum": 4},
+        "column": {"type": "integer", "minimum": 0, "maximum": 6},
+        "pitch": {"enum": [-8, -4, 0, 4, 8]},
+        "roll": {"enum": [-12, -8, -4, 0, 4, 8, 12]},
+        "path": {"type": "string", "pattern": "^views/view_r[0-4]_c[0-6]\\.webp$"}
+      }
+    },
+    "fileDigest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sha256", "size"],
+      "properties": {
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "size": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

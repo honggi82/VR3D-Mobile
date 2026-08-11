@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VR3D 모바일</string>
+    <string name="library">보관함</string>
+    <string name="library_empty">.vr3d 파일을 가져와 시작하세요.</string>
+    <string name="import_package">.vr3d 가져오기</string>
+    <string name="import_complete">가져오기가 완료되었습니다</string>
+    <string name="import_failed">가져오기 실패: %1$s</string>
+    <string name="open_project">열기</string>
+    <string name="delete_project">삭제</string>
+    <string name="delete_title">이 프로젝트를 삭제할까요?</string>
+    <string name="delete_message">핸드폰에 가져온 로컬 패키지가 삭제됩니다.</string>
+    <string name="cancel">취소</string>
+    <string name="language_switch">English</string>
+    <string name="viewer_library">보관함</string>
+    <string name="center_view">중앙 맞춤</string>
+    <string name="angle_readout">좌우 %1$.1f° · 상하 %2$.1f°</string>
+    <string name="sensor_unavailable">이 기기에서 지원되는 움직임 센서를 찾지 못했습니다.</string>
+    <string name="project_unavailable">프로젝트가 없거나 올바르지 않습니다.</string>
+    <string name="loading_view">입체 사진을 불러오는 중…</string>
+    <string name="project_title">VR3D %1$s</string>
+    <string name="project_details">%1$s · %2$s · 시점 35개</string>
+</resources>

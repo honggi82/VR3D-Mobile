@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VR3D Mobile UI 방향 시안</title>
+  <style>
+    :root { color-scheme: dark; --bg:#090d14; --panel:#121925; --line:#263247; --text:#eef5ff; --muted:#96a5ba; --accent:#62e6c8; --accent2:#7997ff; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; font-family:Inter,"Noto Sans KR",system-ui,sans-serif; color:var(--text); background:radial-gradient(circle at 20% 0,#17253b 0,transparent 34%),var(--bg); }
+    button { font:inherit; }
+    .shell { width:min(1320px,94vw); margin:0 auto; padding:36px 0 60px; }
+    header { display:flex; justify-content:space-between; align-items:end; gap:24px; margin-bottom:24px; }
+    h1 { margin:0; font-size:clamp(26px,4vw,48px); letter-spacing:-.04em; }
+    header p { margin:8px 0 0; color:var(--muted); }
+    .status { color:var(--accent); font-size:13px; border:1px solid #2d5e5a; background:#102b2a; border-radius:999px; padding:8px 12px; white-space:nowrap; }
+    .tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:22px 0 28px; }
+    .tab { text-align:left; color:var(--muted); border:1px solid var(--line); border-radius:16px; padding:14px 16px; background:#101722; cursor:pointer; }
+    .tab strong { display:block; color:var(--text); margin-bottom:5px; }
+    .tab.active { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; background:#112321; }
+    .direction { display:none; }
+    .direction.active { display:block; }
+    .summary { display:flex; justify-content:space-between; align-items:center; gap:18px; margin-bottom:18px; }
+    .summary h2 { margin:0; font-size:24px; }
+    .summary p { margin:6px 0 0; color:var(--muted); }
+    .chips { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .chip { padding:7px 10px; border:1px solid var(--line); border-radius:999px; color:#cad8eb; font-size:12px; }
+    .screens { display:grid; grid-template-columns:1.45fr .72fr .72fr; gap:18px; align-items:stretch; }
+    .web, .phone { border:1px solid var(--line); background:rgba(15,22,33,.92); box-shadow:0 22px 60px #0008; overflow:hidden; }
+    .web { border-radius:22px; min-height:600px; }
+    .phone { width:100%; min-height:600px; border-radius:36px; border-width:7px; position:relative; }
+    .bar { height:42px; display:flex; align-items:center; gap:7px; padding:0 16px; border-bottom:1px solid var(--line); color:var(--muted); font-size:12px; }
+    .dot { width:8px; height:8px; border-radius:50%; background:#506078; }
+    .content { padding:26px; }
+    .hero { padding:30px; border-radius:20px; background:linear-gradient(135deg,#182a43,#142523); border:1px solid #2b4356; }
+    .eyebrow { color:var(--accent); text-transform:uppercase; letter-spacing:.14em; font-size:11px; }
+    h3 { margin:8px 0 10px; font-size:25px; }
+    .muted { color:var(--muted); line-height:1.6; }
+    .upload { margin-top:22px; border:1px dashed #4d6681; border-radius:18px; padding:34px 20px; text-align:center; background:#0d141e; }
+    .primary { display:inline-flex; align-items:center; justify-content:center; border:0; border-radius:12px; padding:12px 18px; color:#07120f; font-weight:800; background:var(--accent); }
+    .row { display:flex; gap:10px; align-items:center; justify-content:space-between; }
+    .card { margin-top:14px; padding:16px; border:1px solid var(--line); border-radius:15px; background:#0d141e; }
+    .progress { height:8px; background:#233044; border-radius:10px; overflow:hidden; margin:12px 0 7px; }
+    .progress i { display:block; width:68%; height:100%; background:linear-gradient(90deg,var(--accent2),var(--accent)); }
+    .phone-top { height:36px; display:flex; justify-content:space-between; align-items:center; padding:0 18px; font-size:11px; }
+    .phone-body { height:557px; position:relative; overflow:hidden; }
+    .scene { position:absolute; inset:0; background:linear-gradient(#243d66 0 42%,#efb066 43% 54%,#17283a 55%); }
+    .scene:before { content:""; position:absolute; left:12%; right:10%; bottom:23%; height:32%; background:linear-gradient(105deg,#07111e 0 18%,#112033 18% 31%,#050b14 31% 52%,#1b2a3f 52%); clip-path:polygon(0 100%,8% 38%,20% 66%,31% 5%,45% 69%,58% 30%,67% 62%,78% 0,100% 100%); }
+    .scene:after { content:"부산 야경"; position:absolute; left:20px; bottom:24px; font-size:22px; font-weight:800; text-shadow:0 2px 10px #000; }
+    .hud { position:absolute; left:14px; right:14px; top:14px; display:flex; justify-content:space-between; }
+    .pill { padding:7px 10px; border-radius:999px; background:#071019b8; backdrop-filter:blur(8px); font-size:11px; }
+    .cross { position:absolute; left:50%; top:50%; width:42px; height:42px; transform:translate(-50%,-50%); border:1px solid #fff8; border-radius:50%; }
+    .cross:before,.cross:after { content:""; position:absolute; background:#fff9; }
+    .cross:before { width:56px; height:1px; left:-8px; top:20px; }
+    .cross:after { height:56px; width:1px; top:-8px; left:20px; }
+    .center-btn { position:absolute; left:50%; bottom:18px; transform:translateX(-50%); padding:11px 18px; border-radius:999px; background:#f5f8ff; color:#0d1520; font-weight:800; font-size:12px; }
+    .library { padding:16px; background:#0c121c; height:100%; }
+    .library h4 { margin:8px 0 16px; font-size:19px; }
+    .thumb { height:118px; border-radius:15px; margin-bottom:12px; padding:12px; display:flex; align-items:end; font-weight:700; background:linear-gradient(145deg,#263c67,#efab64 58%,#101d2a 59%); }
+    .thumb:nth-of-type(2) { background:linear-gradient(145deg,#175049,#8bd5bc 53%,#11221f 54%); }
+    .thumb:nth-of-type(3) { background:linear-gradient(145deg,#5c315a,#c67dac 53%,#1a1220 54%); }
+    .metric-grid { position:absolute; inset:72px 15px 74px; border:1px solid #8aa1bd66; background-image:linear-gradient(#90a6c522 1px,transparent 1px),linear-gradient(90deg,#90a6c522 1px,transparent 1px); background-size:28px 28px; }
+    .readout { position:absolute; left:18px; right:18px; bottom:18px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .readout div { border:1px solid #47607c; background:#09111ccc; padding:10px; border-radius:10px; font-size:11px; }
+    .readout b { display:block; font-size:18px; color:var(--accent); }
+    .light { --bg:#f2f5f8; --panel:#fff; --line:#dce3eb; --text:#18202b; --muted:#697789; --accent:#2e70f0; --accent2:#6d95ef; color-scheme:light; background:#f4f7fa; }
+    .light .web,.light .phone,.light .tab { background:#fff; box-shadow:0 18px 45px #24405a1e; }
+    .light .card,.light .upload,.light .library { background:#f7f9fc; }
+    .light .primary { color:#fff; }
+    .editorial { --accent:#ffcf63; --accent2:#ff6b8a; }
+    .editorial .hero { background:linear-gradient(135deg,#3b2046,#1c3f4b); }
+    .editorial h3 { font-family:Georgia,serif; font-size:34px; }
+    .verdict { margin-top:24px; padding:18px; border:1px solid var(--line); border-radius:16px; background:#0d141e; color:#c8d4e5; }
+    .light .verdict { background:#fff; }
+    @media(max-width:900px){ .tabs{grid-template-columns:1fr 1fr}.screens{grid-template-columns:1fr}.phone{max-width:360px;margin:auto} header,.summary{align-items:start;flex-direction:column}.chips{justify-content:start} }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div><h1>VR3D Mobile · UI 방향 시안</h1><p>같은 기능을 네 가지 화면 철학으로 비교합니다. 탭을 눌러 전환해보세요.</p></div>
+      <span class="status">설계 지도 · 3단계</span>
+    </header>
+    <nav class="tabs" aria-label="디자인 방향">
+      <button class="tab active" data-view="a"><strong>A · 몰입형</strong>사진이 화면의 주인공</button>
+      <button class="tab" data-view="b"><strong>B · 갤러리형</strong>여러 결과를 쉽게 관리</button>
+      <button class="tab" data-view="c"><strong>C · 계측형</strong>각도와 깊이 정보를 선명하게</button>
+      <button class="tab" data-view="d"><strong>D · 에디토리얼</strong>전시처럼 감성적인 경험</button>
+    </nav>
+
+    <section class="direction active" id="a">
+      <div class="summary"><div><h2>A · 몰입형 뷰어</h2><p>첫 화면부터 사진을 크게 보여주고 조작 요소는 최소화합니다.</p></div><div class="chips"><span class="chip">추천</span><span class="chip">전체 화면</span><span class="chip">중앙 맞춤</span></div></div>
+      <div class="screens">
+        <article class="web"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i> honggi82.github.io/VR3D-Mobile</div><div class="content"><div class="hero"><span class="eyebrow">Photo to spatial view</span><h3>사진 한 장을<br>움직이는 장면으로.</h3><p class="muted">사진을 올리면 사용자 PC에서 깊이를 계산하고 Android용 VR3D 패키지를 만듭니다.</p><div class="upload"><p>JPEG · PNG · WebP / 최대 25MB</p><button class="primary">사진 선택</button></div></div><div class="card"><div class="row"><b>부산_야경.jpg</b><small>고품질 · vitl</small></div><div class="progress"><i></i></div><small class="muted">시점 이미지 생성 중 · 24/35</small></div></div></article>
+        <article class="phone"><div class="phone-top"><b>10:24</b><span>5G ▰ 82%</span></div><div class="phone-body"><div class="scene"></div><div class="hud"><span class="pill">← 보관함</span><span class="pill">−3.2° · +1.8°</span></div><div class="center-btn">◎ 중앙 맞춤</div></div></article>
+        <article class="phone"><div class="phone-top"><b>10:24</b><span>VR3D</span></div><div class="phone-body library"><h4>내 VR3D</h4><div class="thumb">부산 야경</div><div class="thumb">제주 숲길</div><div class="thumb">작업실</div><button class="primary" style="width:100%">＋ 파일 가져오기</button></div></article>
+      </div>
+      <div class="verdict">답변 예시: <b>A 선택</b> / 가져올 요소: <b>전체 화면 사진, 작은 각도 표시</b> / 제외할 요소: <b>없음</b></div>
+    </section>
+
+    <section class="direction light" id="b">
+      <div class="summary"><div><h2>B · 친숙한 갤러리</h2><p>일반 사진 앱처럼 밝고 익숙하며 프로젝트 관리가 중심입니다.</p></div><div class="chips"><span class="chip">밝은 화면</span><span class="chip">카드 목록</span><span class="chip">초보자 친화</span></div></div>
+      <div class="screens">
+        <article class="web"><div class="bar">VR3D 만들기</div><div class="content"><h3>새 입체 사진 만들기</h3><p class="muted">사진 선택부터 다운로드까지 단계별로 안내합니다.</p><div class="upload"><h3 style="font-size:20px">1. 사진을 선택하세요</h3><p>지원 형식: JPG, PNG, WebP</p><button class="primary">내 사진 찾기</button></div><div class="card"><b>2. 처리 품질</b><p class="muted">● 고품질 &nbsp; ○ 빠른 처리</p></div><button class="primary" style="width:100%;margin-top:14px">안전 검사 후 만들기</button></div></article>
+        <article class="phone"><div class="phone-top"><b>10:24</b><span>VR3D</span></div><div class="phone-body library"><div class="row"><h4>내 사진</h4><span>⋮</span></div><div class="thumb">부산 야경</div><div class="thumb">제주 숲길</div><div class="thumb">작업실</div><button class="primary" style="width:100%">파일 가져오기</button></div></article>
+        <article class="phone"><div class="phone-top"><b>10:24</b><span>보기</span></div><div class="phone-body"><div class="scene"></div><div class="hud"><span class="pill">닫기</span><span class="pill">도움말</span></div><div class="center-btn">중앙 다시 맞추기</div></div></article>
+      </div>
+      <div class="verdict">답변 예시: <b>B 선택</b> / 가져올 요소: <b>단계별 웹 업로드</b> / 제외할 요소: <b>밝은 뷰어</b></div>
+    </section>
+
+    <section class="direction" id="c">
+      <div class="summary"><div><h2>C · 3D 계측 콘솔</h2><p>연구·데모 용도로 pitch, roll, 깊이 품질과 처리 정보를 전면에 표시합니다.</p></div><div class="chips"><span class="chip">연구용</span><span class="chip">센서 HUD</span><span class="chip">진단 가능</span></div></div>
+      <div class="screens">
+        <article class="web"><div class="bar">VR3D PROCESS NODE / ONLINE</div><div class="content"><span class="eyebrow">JOB 7F2A91</span><h3>Depth reconstruction</h3><div class="card"><div class="row"><span>입력 검증</span><b style="color:var(--accent)">PASS</b></div></div><div class="card"><div class="row"><span>AhnLab V3 검사</span><b style="color:var(--accent)">PASS</b></div></div><div class="card"><div class="row"><span>Depth model</span><b>VIT-L / CUDA</b></div><div class="progress"><i></i></div><small>68% · viewpoint 24/35</small></div><div class="card"><small class="muted">ROLL RANGE</small><h3>−12° … +12°</h3><small class="muted">PITCH RANGE</small><h3>−8° … +8°</h3></div></div></article>
+        <article class="phone"><div class="phone-top"><b>VR3D SENSOR</b><span>60 FPS</span></div><div class="phone-body"><div class="scene"></div><div class="metric-grid"></div><div class="cross"></div><div class="readout"><div>ROLL<b>−3.2°</b></div><div>PITCH<b>+1.8°</b></div><div>VIEW<b>12 / 17</b></div><div>DEPTH<b>VIT-L</b></div></div></div></article>
+        <article class="phone"><div class="phone-top"><b>PROJECT</b><span>DETAIL</span></div><div class="phone-body library"><h4>부산 야경</h4><div class="card"><small class="muted">PACKAGE</small><p><b>vr3d/1.0</b><br>35 WebP views<br>Depth 16-bit</p></div><div class="card"><small class="muted">INTEGRITY</small><p style="color:var(--accent)"><b>SHA-256 VERIFIED</b></p></div><div class="card"><small class="muted">SENSOR</small><p>Rotation vector available<br>Calibration saved</p></div></div></article>
+      </div>
+      <div class="verdict">답변 예시: <b>C 선택</b> / 가져올 요소: <b>각도 HUD, V3 통과 표시</b> / 제외할 요소: <b>패키지 기술 정보</b></div>
+    </section>
+
+    <section class="direction editorial" id="d">
+      <div class="summary"><div><h2>D · 디지털 전시</h2><p>기술 표현을 감추고 결과 사진을 작품처럼 경험하게 합니다.</p></div><div class="chips"><span class="chip">감성적</span><span class="chip">큰 타이포</span><span class="chip">전시 모드</span></div></div>
+      <div class="screens">
+        <article class="web"><div class="bar">VR3D / SPATIAL PHOTOGRAPH</div><div class="content"><div class="hero"><span class="eyebrow">새로운 시선</span><h3>멈춰 있던 사진에<br>공간을 더합니다.</h3><p class="muted">한 장의 기억을 기울여 바라보세요.</p><div class="upload"><button class="primary">사진으로 시작하기</button><p class="muted">안전 검사와 깊이 처리는 사용자 PC에서 진행됩니다.</p></div></div><div class="card"><div class="row"><span>오늘 만든 장면</span><b>03</b></div></div></div></article>
+        <article class="phone"><div class="phone-top"><b>VR3D</b><span>•••</span></div><div class="phone-body"><div class="scene"></div><div class="hud"><span class="pill">부산 · 2026</span></div><div class="center-btn">화면을 기울여보세요</div></div></article>
+        <article class="phone"><div class="phone-top"><b>COLLECTION</b><span>＋</span></div><div class="phone-body library"><h4 style="font-family:Georgia,serif;font-size:28px">나의 공간 사진</h4><div class="thumb">01 / 부산 야경</div><div class="thumb">02 / 제주 숲길</div><div class="thumb">03 / 작업실</div></div></article>
+      </div>
+      <div class="verdict">답변 예시: <b>D 선택</b> / 가져올 요소: <b>전시형 뷰어</b> / 제외할 요소: <b>큰 문구</b></div>
+    </section>
+  </main>
+  <script>
+    const tabs = [...document.querySelectorAll('.tab')];
+    const views = [...document.querySelectorAll('.direction')];
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.toggle('active', x === tab));
+      views.forEach(x => x.classList.toggle('active', x.id === tab.dataset.view));
+      document.body.classList.toggle('light', tab.dataset.view === 'b');
+    }));
+  </script>
+</body>
+</html>

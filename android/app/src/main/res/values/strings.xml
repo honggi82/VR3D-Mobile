@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VR3D Mobile</string>
+    <string name="library">Library</string>
+    <string name="library_empty">Import a .vr3d file to begin.</string>
+    <string name="import_package">Import .vr3d</string>
+    <string name="import_complete">Import complete</string>
+    <string name="import_failed">Import failed: %1$s</string>
+    <string name="open_project">Open</string>
+    <string name="delete_project">Delete</string>
+    <string name="delete_title">Delete this project?</string>
+    <string name="delete_message">The locally imported package will be removed from this phone.</string>
+    <string name="cancel">Cancel</string>
+    <string name="language_switch">한국어</string>
+    <string name="viewer_library">Library</string>
+    <string name="center_view">Center</string>
+    <string name="angle_readout">Roll %1$.1f° · Pitch %2$.1f°</string>
+    <string name="sensor_unavailable">This device has no supported motion sensor.</string>
+    <string name="project_unavailable">The project is missing or invalid.</string>
+    <string name="loading_view">Loading spatial view…</string>
+    <string name="project_title">VR3D %1$s</string>
+    <string name="project_details">%1$s · %2$s · 35 views</string>
+</resources>

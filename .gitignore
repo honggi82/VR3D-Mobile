@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+.playwright-cli/
+output/
+pc/data/
+pc/.env
+pc/*.log
+android/.gradle/
+android/local.properties
+android/**/build/
+*.jks
+*.keystore
+# The GitHub Pages endpoint descriptor is intentionally tracked in its safe offline state.

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vr3d-pc"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.100",
+  "numpy>=1.23",
+  "Pillow>=10",
+  "psutil>=5.9",
+  "python-multipart>=0.0.6",
+  "uvicorn>=0.23",
+]
+
+[project.optional-dependencies]
+test = ["httpx>=0.24", "jsonschema>=4", "pytest>=7"]
+
+[project.scripts]
+vr3d-server = "vr3d_pc.api:main"
+vr3d-admin = "vr3d_pc.gui:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+where = ["."]

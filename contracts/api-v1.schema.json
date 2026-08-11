@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://honggi82.github.io/VR3D-Mobile/contracts/api-v1.schema.json",
+  "$defs": {
+    "gate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ready", "code"],
+      "properties": {"ready": {"type": "boolean"}, "code": {"type": "string"}}
+    },
+    "health": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "publicReady", "gates"],
+      "properties": {
+        "status": {"const": "online"}, "publicReady": {"type": "boolean"},
+        "gates": {
+          "type": "object", "additionalProperties": false,
+          "required": ["v3", "scanner", "content"],
+          "properties": {
+            "v3": {"$ref": "#/$defs/gate"},
+            "scanner": {"$ref": "#/$defs/gate"},
+            "content": {"$ref": "#/$defs/gate"}
+          }
+        }
+      }
+    },
+    "job": {
+      "type": "object", "additionalProperties": false,
+      "required": ["jobId", "status", "progress", "createdAt", "expiresAt", "errorCode", "downloadUrl"],
+      "properties": {
+        "jobId": {"type": "string", "format": "uuid"},
+        "status": {"enum": ["queued", "scanning", "processing", "complete", "failed"]},
+        "progress": {"type": "integer", "minimum": 0, "maximum": 100},
+        "createdAt": {"type": "string", "format": "date-time"},
+        "expiresAt": {"type": "string", "format": "date-time"},
+        "errorCode": {"type": ["string", "null"]},
+        "downloadUrl": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

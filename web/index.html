@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d14">
+  <meta name="description" content="Create a mobile-ready VR3D package from one photo.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self' https: http://localhost:* http://127.0.0.1:*; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23090d14'/%3E%3Cpath d='M7 9h18l-4 14H11z' fill='%237fffd4'/%3E%3C/svg%3E">
+  <title>VR3D Mobile</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#creator" data-i18n="skip">본문으로 건너뛰기</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="VR3D Mobile home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>VR3D</span>
+    </a>
+    <div class="header-actions">
+      <span id="serverStatus" class="status-pill status-checking" role="status">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span data-i18n="checking">서버 확인 중</span>
+      </span>
+      <button id="languageButton" class="text-button" type="button" aria-label="Switch language">EN</button>
+    </div>
+  </header>
+
+  <main id="creator">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-copy">
+        <p class="eyebrow">PHOTO TO SPATIAL VIEW</p>
+        <h1 id="heroTitle" data-i18n-html="heroTitle">사진 한 장을<br><span>움직이는 장면</span>으로.</h1>
+        <p class="lede" data-i18n="heroBody">사진을 올리면 사용자의 PC에서 깊이와 35개 시점을 계산해 Android용 VR3D 패키지를 만듭니다.</p>
+        <ul class="specs" aria-label="Output specification">
+          <li><b>35</b><span data-i18n="views">시점</span></li>
+          <li><b>±12° / ±8°</b><span data-i18n="range">기울기 범위</span></li>
+          <li><b>24h</b><span data-i18n="retention">자동 삭제</span></li>
+        </ul>
+      </div>
+
+      <form id="uploadForm" class="creator-card" novalidate>
+        <div class="step-label"><span>01</span><span data-i18n="choosePhoto">사진 선택</span></div>
+        <input id="photoInput" class="visually-hidden" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+        <label id="dropZone" class="drop-zone" for="photoInput">
+          <span class="upload-icon" aria-hidden="true">＋</span>
+          <strong data-i18n="dropTitle">사진을 놓거나 선택하세요</strong>
+          <span data-i18n="dropHelp">JPG · PNG · WebP / 최대 25 MiB</span>
+        </label>
+
+        <div id="fileSummary" class="file-summary" hidden>
+          <img id="preview" alt="">
+          <div>
+            <strong id="fileName"></strong>
+            <span id="fileMeta"></span>
+          </div>
+          <button id="removeFile" class="icon-button" type="button" data-i18n-aria="removeFile" aria-label="선택한 사진 제거">×</button>
+        </div>
+        <p id="fileError" class="field-error" role="alert" hidden></p>
+
+        <fieldset class="model-fieldset">
+          <legend><span>02</span><span data-i18n="chooseQuality">처리 품질</span></legend>
+          <label class="model-option">
+            <input type="radio" name="model" value="vitl" checked>
+            <span><b data-i18n="highQuality">고품질</b><small>VIT-L · <span data-i18n="recommended">권장</span></small></span>
+          </label>
+          <label class="model-option">
+            <input type="radio" name="model" value="vits">
+            <span><b data-i18n="fastMode">빠른 처리</b><small>VIT-S</small></span>
+          </label>
+        </fieldset>
+
+        <div class="safety-note">
+          <span aria-hidden="true">◇</span>
+          <p><b data-i18n="securityTitle">안전 검사 후에만 처리합니다.</b><br><span data-i18n="securityBody">V3 상태, 추가 백신, 이미지 재인코딩과 콘텐츠 안전 검사를 모두 통과해야 합니다.</span></p>
+        </div>
+
+        <button id="submitButton" class="primary-button" type="submit" disabled>
+          <span data-i18n="create">VR3D 만들기</span><span aria-hidden="true">→</span>
+        </button>
+        <p id="offlineHelp" class="offline-help" data-i18n="offlineHelp">PC 처리 서버가 오프라인입니다. 운영자가 서버를 시작하면 자동으로 연결됩니다.</p>
+      </form>
+    </section>
+
+    <section id="jobPanel" class="job-panel" aria-labelledby="jobTitle" hidden>
+      <div class="job-heading">
+        <div>
+          <p class="eyebrow" data-i18n="processingLabel">SECURE PROCESSING</p>
+          <h2 id="jobTitle" data-i18n="processing">VR3D 생성 중</h2>
+        </div>
+        <span id="jobId" class="job-id"></span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="jobTitle">
+        <span id="progressBar"></span>
+      </div>
+      <div class="progress-copy"><span id="stageText" aria-live="polite"></span><b id="progressText">0%</b></div>
+
+      <ol class="stages" aria-label="Security and processing stages">
+        <li data-stage="upload"><i></i><span data-i18n="stageUpload">업로드 검증</span></li>
+        <li data-stage="v3"><i></i><span data-i18n="stageV3">AhnLab V3 상태</span></li>
+        <li data-stage="scanner"><i></i><span data-i18n="stageScanner">추가 로컬 검사</span></li>
+        <li data-stage="sanitize"><i></i><span data-i18n="stageSanitize">안전한 이미지 재인코딩</span></li>
+        <li data-stage="content"><i></i><span data-i18n="stageContent">콘텐츠 안전 검사</span></li>
+        <li data-stage="depth"><i></i><span data-i18n="stageDepth">깊이 계산</span></li>
+        <li data-stage="views"><i></i><span data-i18n="stageViews">35개 시점 생성</span></li>
+        <li data-stage="package"><i></i><span data-i18n="stagePackage">VR3D 패키지 완성</span></li>
+      </ol>
+
+      <div id="jobError" class="result-card result-error" role="alert" hidden>
+        <b data-i18n="blockedTitle">처리가 완료되지 않았습니다.</b>
+        <span id="jobErrorText"></span>
+      </div>
+      <div id="jobReady" class="result-card result-ready" hidden>
+        <div><b data-i18n="readyTitle">VR3D 패키지가 준비되었습니다.</b><span data-i18n="readyBody">24시간 안에 다운로드해 Android 앱에서 여세요.</span></div>
+        <button id="downloadButton" class="download-button" type="button" data-i18n="download">.vr3d 다운로드</button>
+      </div>
+    </section>
+
+    <section class="privacy-strip" aria-label="Privacy information">
+      <div><b>01</b><span data-i18n="privateProcessing">사용자 PC에서 처리</span></div>
+      <div><b>02</b><span data-i18n="noPermanentStorage">입력과 결과는 24시간 후 자동 삭제</span></div>
+      <div><b>03</b><span data-i18n="testService">Quick Tunnel 기반 시험 서비스</span></div>
+    </section>
+  </main>
+
+  <footer><span>VR3D Mobile</span><span data-i18n="footer">단일 사진의 가려진 영역은 완전히 복원할 수 없습니다.</span></footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VR3D Mobile · 4분면 설계 지도</title>
+  <style>
+    :root{color-scheme:dark;--bg:#091019;--panel:#111b28;--panel2:#0d1621;--line:#26384e;--text:#edf5ff;--muted:#9bb0c7;--mint:#5ee2c1;--blue:#7fa0ff;--amber:#ffd166;--red:#ff7b86}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 8% 0,#183350 0,transparent 30%),var(--bg);color:var(--text);font-family:Inter,"Noto Sans KR",system-ui,sans-serif;line-height:1.55}
+    main{width:min(1240px,94vw);margin:auto;padding:42px 0 70px} h1{font-size:clamp(30px,5vw,58px);letter-spacing:-.05em;margin:0} h2{margin:0 0 8px;font-size:26px} h3{margin:0 0 7px;font-size:17px} p{margin:7px 0;color:var(--muted)} code{color:#c9d8ff;background:#0a121c;border:1px solid #213249;border-radius:6px;padding:2px 6px}
+    .top{display:flex;justify-content:space-between;gap:24px;align-items:end}.badge{border:1px solid #31645e;background:#0c2928;color:var(--mint);border-radius:99px;padding:8px 12px;font-size:12px;white-space:nowrap}
+    .lede{font-size:18px;max-width:830px;margin:16px 0 28px}.architecture{display:grid;grid-template-columns:repeat(7,auto);gap:10px;align-items:center;padding:20px;border:1px solid var(--line);background:#0b141f;border-radius:20px;margin-bottom:25px;overflow:auto}.node{min-width:130px;text-align:center;border:1px solid var(--line);border-radius:14px;padding:15px 10px;background:var(--panel)}.arrow{color:var(--mint);font-size:20px;text-align:center}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.quadrant{border:1px solid var(--line);border-radius:22px;padding:22px;background:linear-gradient(150deg,#132032,#0d151f);box-shadow:0 22px 50px #0004}.qnum{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--mint)}
+    .item{padding:13px 0;border-top:1px solid #213247}.item:first-of-type{margin-top:13px}.item b{color:#fff}.source{display:block;color:#788da5;font-size:11px;margin-top:5px;word-break:break-all}.state{display:inline-block;margin-left:6px;border:1px solid #39506d;border-radius:99px;padding:2px 7px;color:#bdd0e6;font-size:10px;vertical-align:2px}.state.open{border-color:#7f6430;color:var(--amber)}.state.edge{border-color:#773f48;color:#ff9ea6}.state.done{border-color:#2c675c;color:var(--mint)}
+    table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}th,td{text-align:left;vertical-align:top;border-top:1px solid #25374c;padding:10px 7px}th{color:#91a7bf;font-weight:600}td:first-child{color:#dce9fa;width:32%}
+    .landmine{border-left:3px solid var(--red);padding:11px 13px;margin-top:12px;background:#170f17;border-radius:0 12px 12px 0}.landmine.safe{border-color:var(--amber);background:#18160f}.landmine strong{display:block}.landmine small{color:#91a5bb}
+    .plan{margin-top:22px;border:1px solid var(--line);border-radius:22px;background:var(--panel2);padding:22px}.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.plan-card{border:1px solid #283b51;border-radius:15px;padding:15px;background:#101b28}.plan-card p{font-size:13px}.test{color:var(--mint);font-size:12px}
+    .prompt{margin-top:20px;border:1px solid #35685f;background:#0e2624;border-radius:18px;padding:18px}.prompt textarea{width:100%;min-height:120px;resize:vertical;background:#081411;color:#e9fff9;border:1px solid #315d56;border-radius:12px;padding:14px;font:14px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.copy{margin-top:10px;border:0;border-radius:10px;background:var(--mint);color:#071512;font-weight:800;padding:10px 14px;cursor:pointer}.foot{font-size:12px;color:#758aa3;margin-top:18px}
+    @media(max-width:900px){.top{align-items:start;flex-direction:column}.grid,.plan-grid{grid-template-columns:1fr}.architecture{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="top"><div><div class="qnum">Implementation source of truth</div><h1>VR3D Mobile · 설계 지도</h1></div><span class="badge">4분면 탐색 완료</span></div>
+  <p class="lede">사진 한 장을 사용자 PC에서 깊이·다중 시점 패키지로 변환하고, GitHub Pages에서 내려받아 Android 기울기 센서로 탐색하는 공개형 시스템의 합의된 범위입니다.</p>
+
+  <section class="architecture" aria-label="시스템 흐름">
+    <div class="node">GitHub Pages<br><small>사진 업로드</small></div><div class="arrow">→</div>
+    <div class="node">Quick Tunnel<br><small>임시 HTTPS</small></div><div class="arrow">→</div>
+    <div class="node">PC Tkinter GUI<br><small>서버·대기열 관리</small></div><div class="arrow">→</div>
+    <div class="node">보안 게이트<br><small>V3 + 추가 검사</small></div><div class="arrow">→</div>
+    <div class="node">VDA + 2D DIBR<br><small>35개 시점</small></div><div class="arrow">→</div>
+    <div class="node">.vr3d 패키지<br><small>24시간 보관</small></div><div class="arrow">→</div>
+    <div class="node">Android 앱<br><small>pitch · roll</small></div>
+  </section>
+
+  <section class="grid">
+    <article class="quadrant">
+      <div class="qnum">Quadrant 1 · Known knowns</div><h2>이미 확정된 기반</h2>
+      <div class="item"><b>깊이 추정</b><p>Video-Depth-Anything의 상대 깊이이며 큰 값이 가까운 물체다. 기존 PC의 vitl·vits 가중치를 재사용한다.</p><span class="source">E:\skills-main\skills\.results\VR3D_v1\vr3d\depth.py:1-24</span></div>
+      <div class="item"><b>단일 사진 경로</b><p><code>infer_video_depth_one()</code>이 존재하므로 사진 복제 없이 한 프레임을 직접 추론할 수 있다.</p><span class="source">C:\Users\user\Documents\VR3D_v1_runtime\models\Video-Depth-Anything\video_depth_anything\video_depth_stream.py:77</span></div>
+      <div class="item"><b>기존 합성의 한계</b><p>현재 DIBR은 x축 이동과 수평 홀 채우기만 제공한다. 상하 시점은 새 2D 투영기가 필요하다.</p><span class="source">E:\skills-main\skills\.results\VR3D_v1\vr3d\stereo.py:24-107</span></div>
+      <div class="item"><b>기존 GUI 규율</b><p>pythonw의 표준 출력 보정, 워커 스레드→큐→Tk after 폴링 규율을 그대로 따른다.</p><span class="source">E:\skills-main\skills\.results\VR3D_v1\vr3d\gui.py:14-24, 60-76</span></div>
+      <div class="item"><b>기준선 보존</b><p>VR3D_v1은 수정하지 않고 새 프로젝트를 만든다. 모델과 런타임만 읽기 전용으로 참조한다.</p></div>
+    </article>
+
+    <article class="quadrant">
+      <div class="qnum">Quadrant 2 · Known unknowns</div><h2>결정 원장</h2>
+      <table><thead><tr><th>질문</th><th>확정 답변</th><th>종결자</th></tr></thead><tbody>
+        <tr><td>접속 범위</td><td>인터넷 어디서나</td><td>사용자</td></tr>
+        <tr><td>렌더링</td><td>PC 기준 시점 + 앱 보간의 하이브리드</td><td>사용자</td></tr>
+        <tr><td>시점 격자</td><td>좌우 ±12°, 상하 ±8°, 7×5=35장</td><td>사용자</td></tr>
+        <tr><td>공개 범위</td><td>누구나 업로드, 다중 보안 게이트 필수</td><td>사용자</td></tr>
+        <tr><td>업로드 제한</td><td>25MB·50MP, IP당 동시 1개·시간당 3개</td><td>사용자</td></tr>
+        <tr><td>가져오기</td><td>.vr3d 파일을 눌러 앱 보관함으로 가져오기</td><td>사용자</td></tr>
+        <tr><td>Android</td><td>minSdk 29, targetSdk 36, 테스트 APK</td><td>사용자</td></tr>
+        <tr><td>보관</td><td>입력과 결과 24시간, 차단 파일 즉시 제거</td><td>사용자</td></tr>
+        <tr><td>방향</td><td>세로·가로 자동 대응, 중앙 맞춤을 0°로</td><td>사용자</td></tr>
+        <tr><td>GitHub</td><td>honggi82/VR3D-Mobile 새 공개 저장소</td><td>사용자</td></tr>
+        <tr><td>품질 선택</td><td>vitl 기본 + vits 빠른 옵션</td><td>사용자</td></tr>
+        <tr><td>터널 주소</td><td>Quick Tunnel + endpoint.json 자동 갱신</td><td>사용자</td></tr>
+        <tr><td>결과 규격</td><td>긴 변 1920px, WebP 90, 깊이 16비트</td><td>사용자</td></tr>
+      </tbody></table>
+    </article>
+
+    <article class="quadrant">
+      <div class="qnum">Quadrant 3 · Unknown knowns</div><h2>화면과 운영의 실제 기대</h2>
+      <div class="item"><b>시각 방향</b><p>A 몰입형. 사진이 전체 화면의 주인공이며 보관함·각도·중앙 맞춤만 작게 노출한다.</p></div>
+      <div class="item"><b>사용자</b><p>국내외 공개 사용자. 웹과 앱은 한국어·영어를 기기 언어에 맞춰 제공한다.</p></div>
+      <div class="item"><b>PC 운영자 경험</b><p>명령줄이 아니라 Tkinter 데스크톱 GUI에서 서버·터널·대기열·GPU·V3·자동 삭제·로그를 관리한다.</p></div>
+      <div class="item"><b>완료의 모습</b><p>웹에서 실제 사진을 처리해 .vr3d를 받고, Android 10+ 기기에서 세로·가로 모두 중앙 보정 후 부드럽게 상하좌우 시점을 바꾼다.</p></div>
+      <div class="item"><b>보관함</b><p>여러 패키지를 로컬에 보관하고 삭제할 수 있다. 앱은 주변 시점만 디코딩해 메모리를 제한한다.</p></div>
+    </article>
+
+    <article class="quadrant">
+      <div class="qnum">Quadrant 4 · Unknown unknowns</div><h2>블라인드스폿과 처리 상태</h2>
+      <div class="landmine"><strong>V3의 명시적 파일 검사 API가 확인되지 않음 <span class="state open">OPEN</span></strong><p>V3 실시간 보호 실행을 서버 시작 조건으로 삼고 추가 로컬 검사 결과까지 요구한다. 구현 중 무해 파일로 결과 코드가 검증되지 않으면 공개 업로드는 켜지지 않는다.</p><small>근거: 설치된 V3IS90 실행 파일·서명 확인, 공식 도움말과 탐색기 동사에 개별 검사 CLI 없음.</small></div>
+      <div class="landmine"><strong>Quick Tunnel은 고정 주소·가동 보장이 없음 <span class="state done">결정됨</span></strong><p>endpoint.json을 갱신하고 웹은 서버 오프라인을 명시한다. 테스트·소규모 운영임을 UI에 표시한다.</p></div>
+      <div class="landmine"><strong>익명 사진은 바이러스 외 내용 위험도 있음 <span class="state done">안전 규칙</span></strong><p>로컬 콘텐츠 안전 게이트에서 위험 사진을 차단하고, 차단 파일·썸네일은 즉시 제거한다. 로그에는 사유 코드만 남긴다.</p></div>
+      <div class="landmine safe"><strong>Android Studio와 cloudflared 미설치 <span class="state open">OPEN</span></strong><p>공식 배포본 설치 또는 위치 확인이 필요하다. Android SDK 34~36과 build-tools는 이미 존재한다.</p></div>
+      <div class="landmine safe"><strong>GitHub 인증 만료 <span class="state open">OPEN</span></strong><p>로컬 구현에는 영향이 없고, 저장소 생성·Pages 게시 직전에 honggi82 계정 재인증과 게시 승인이 필요하다.</p></div>
+      <div class="landmine safe"><strong>실제 센서 기기 검증 <span class="state open">OPEN</span></strong><p>에뮬레이터만으로 pitch·roll 체감을 검증할 수 없다. APK 빌드 후 Android 10+ 실기기 연결이 필요하다.</p></div>
+      <div class="landmine safe"><strong>단일 사진의 가려진 배경은 원래 존재하지 않음 <span class="state edge">SHARP EDGE</span></strong><p>±12°/±8° 제한, 깊이 엣지 팽창, z-buffer, 홀 복원과 가장자리 안전 크롭으로 완화하지만 실제 3D 스캔과 같지는 않다.</p></div>
+    </article>
+  </section>
+
+  <section class="plan">
+    <div class="qnum">Tweakable build plan</div><h2>조정 가능성이 높은 것부터</h2>
+    <div class="plan-grid">
+      <div class="plan-card"><h3>1. 시점 합성 품질</h3><p>2D forward splat, 깊이 우선순위, 홀 복원, 안전 크롭을 동일 사진에서 비교한다. ±12°/±8°는 그대로 두고 강도만 조정 가능하게 한다.</p><div class="test">검증: 중앙·네 모서리·최대 각도 9시점 골든 이미지</div></div>
+      <div class="plan-card"><h3>2. 안전 게이트</h3><p>형식·크기·V3 상태·추가 백신·재인코딩·콘텐츠 안전을 순서대로 강제한다. 하나라도 불명확하면 처리하지 않는다.</p><div class="test">검증: 위장 확장자, 이미지 폭탄, 손상 파일, 차단 콘텐츠, 백신 꺼짐</div></div>
+      <div class="plan-card"><h3>3. 몰입형 상호작용</h3><p>센서 저역통과 필터와 인접 시점 보간 속도를 실기기에서 조정한다. 회전 시 축 변환과 중앙 재보정을 우선한다.</p><div class="test">검증: 세로↔가로 회전, 센서 미탑재 폴백, 60초 메모리 안정성</div></div>
+      <div class="plan-card"><h3>4. 공개 연결</h3><p>Tkinter가 서버·Quick Tunnel·endpoint.json 상태를 하나의 상태 머신으로 관리한다.</p><div class="test">검증: PC 오프라인, 터널 재시작, 주소 변경, 만료 GitHub 인증</div></div>
+      <div class="plan-card"><h3>5. 기계적 구현</h3><p>FastAPI 서버, 24시간 정리 작업, .vr3d 스키마, 다국어 GitHub Pages, Kotlin Android 앱, Gradle 프로젝트와 디버그 APK를 구성한다.</p><div class="test">검증: 단위·통합 테스트, Python py_compile, Android lint/test, APK 설치</div></div>
+      <div class="plan-card"><h3>6. 기준선 비교와 전달</h3><p>VR3D_v1은 그대로 유지하고 같은 이미지에서 기존 좌우 DIBR와 새 중앙 수평 시점을 비교한다. 문서와 원클릭 실행기를 제공한다.</p><div class="test">검증: 원본 미변경, 결과 해시·manifest, 한국어 인코딩 점검</div></div>
+    </div>
+  </section>
+
+  <section class="prompt">
+    <h2>다음 메시지</h2><p>아래 문장을 보내면 이 지도를 기준으로 구현을 시작합니다.</p>
+    <textarea id="next" readonly>이 설계 지도대로 VR3D Mobile 구현을 시작해줘. 기존 VR3D_v1은 수정하지 말고, 구현 중 계획과 다른 점은 변경 원장에 기록해줘. 안전 게이트가 검증되지 않으면 공개 업로드를 활성화하지 말고, APK와 전체 소스 및 검증 결과까지 만들어줘.</textarea>
+    <button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('next').value);this.textContent='복사됨'">문장 복사</button>
+  </section>
+  <p class="foot">작성일: 2026-08-12 · 범위: PC 처리 서버 + Tkinter 운영 GUI + GitHub Pages + Android 앱 + 테스트 APK</p>
+</main>
+</body>
+</html>
