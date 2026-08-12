@@ -1,7 +1,7 @@
 {
   "api_version": "v1",
-  "online": false,
-  "api_base": null,
-  "updated_at": null,
+  "online": true,
+  "api_base": "https://retain-yrs-favourite-max.trycloudflare.com",
+  "updated_at": "2026-08-12T04:38:29.816379+00:00",
   "expires_at": null
 }
